@@ -8,6 +8,7 @@ import subprocess
 import re
 import os
 import os.path
+import sys
 
 def list_processes():
     '''
@@ -71,6 +72,7 @@ def main():
     '''
     Main function for this script
     '''
+    ret = 0
     for pid in list_processes():
         try:
             start_time = get_process_start_time(pid)
@@ -84,10 +86,12 @@ def main():
             try:
                 if get_file_mtime(lib) > start_time:
                     should_be_restarted(pid)
+                    ret = 1
                     break
             except FileNotFoundError:
                 should_be_restarted(pid)
+                ret = 1
                 break
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
